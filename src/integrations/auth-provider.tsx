@@ -31,13 +31,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   const loadProfile = async (uid: string) => {
-    const [{ data: prof }, { data: roles }] = await Promise.all([
-      supabase.from("profiles").select("user_id,name,email,active").eq("user_id", uid).maybeSingle(),
-      supabase.from("user_roles").select("role").eq("user_id", uid),
-    ]);
-    setProfile(prof as AuthProfile | null);
-    const r = roles?.[0]?.role as AppRole | undefined;
-    setRole(r ?? null);
+    setLoading(true);
+    try {
+      const [{ data: prof }, { data: roles }] = await Promise.all([
+        supabase.from("profiles").select("user_id,name,email,active").eq("user_id", uid).maybeSingle(),
+        supabase.from("user_roles").select("role").eq("user_id", uid),
+      ]);
+      setProfile(prof as AuthProfile | null);
+      const r = roles?.[0]?.role as AppRole | undefined;
+      setRole(r ?? null);
+    } catch (err) {
+      console.error("Error loading profile:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {

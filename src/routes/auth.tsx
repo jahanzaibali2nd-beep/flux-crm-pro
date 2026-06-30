@@ -2,7 +2,6 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { bootstrapFirstAdmin, checkBootstrapNeeded } from "@/lib/admin.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -25,9 +24,17 @@ function AuthPage() {
     supabase.auth.getSession().then(({ data }) => {
       if (data.session) navigate({ to: "/dashboard" });
     });
-    checkBootstrapNeeded().then((r) => {
-      if (r.needed) setMode("bootstrap");
-    });
+    supabase.rpc("is_bootstrap_needed")
+      .then(({ data: needed, error }) => {
+        if (error) {
+          console.error("Error checking if bootstrap is needed:", error);
+          return;
+        }
+        if (needed) setMode("bootstrap");
+      })
+      .catch((err) => {
+        console.error("Failed to check bootstrap status:", err);
+      });
   }, [navigate]);
 
   const submit = async (e: React.FormEvent) => {
@@ -35,11 +42,24 @@ function AuthPage() {
     setBusy(true);
     try {
       if (mode === "bootstrap") {
-        await bootstrapFirstAdmin({ data: { email, password, name } });
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) throw new Error(error.message);
-        toast.success("Admin account created");
-        navigate({ to: "/dashboard" });
+        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: { name },
+          },
+        });
+        if (signUpError) throw new Error(signUpError.message);
+        
+        if (signUpData.session) {
+          toast.success("Admin account created");
+          navigate({ to: "/dashboard" });
+        } else {
+          const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+          if (signInError) throw new Error(signInError.message);
+          toast.success("Admin account created");
+          navigate({ to: "/dashboard" });
+        }
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw new Error(error.message);
