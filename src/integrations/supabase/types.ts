@@ -14,16 +14,253 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      activity_logs: {
+        Row: {
+          action: string
+          created_at: string
+          details: string | null
+          entity_id: string | null
+          entity_type: string | null
+          id: string
+          user_id: string | null
+          user_name: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          details?: string | null
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          user_id?: string | null
+          user_name?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          details?: string | null
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          user_id?: string | null
+          user_name?: string | null
+        }
+        Relationships: []
+      }
+      leads: {
+        Row: {
+          address: string | null
+          amount: number | null
+          area: string | null
+          assigned_tech_id: string | null
+          context: string | null
+          created_at: string
+          created_by: string
+          customer_availability: string | null
+          customer_name: string
+          customer_number: string
+          follow_up_at: string | null
+          id: string
+          notes: string | null
+          service: string
+          status: Database["public"]["Enums"]["lead_status"]
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          amount?: number | null
+          area?: string | null
+          assigned_tech_id?: string | null
+          context?: string | null
+          created_at?: string
+          created_by: string
+          customer_availability?: string | null
+          customer_name: string
+          customer_number: string
+          follow_up_at?: string | null
+          id?: string
+          notes?: string | null
+          service: string
+          status?: Database["public"]["Enums"]["lead_status"]
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          amount?: number | null
+          area?: string | null
+          assigned_tech_id?: string | null
+          context?: string | null
+          created_at?: string
+          created_by?: string
+          customer_availability?: string | null
+          customer_name?: string
+          customer_number?: string
+          follow_up_at?: string | null
+          id?: string
+          notes?: string | null
+          service?: string
+          status?: Database["public"]["Enums"]["lead_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "leads_assigned_tech_id_fkey"
+            columns: ["assigned_tech_id"]
+            isOneToOne: false
+            referencedRelation: "techs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          active: boolean
+          created_at: string
+          email: string
+          id: string
+          name: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          email: string
+          id?: string
+          name: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      targets: {
+        Row: {
+          created_at: string
+          id: string
+          period: Database["public"]["Enums"]["target_period"]
+          target_type: Database["public"]["Enums"]["target_type"]
+          updated_at: string
+          user_id: string
+          value: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          period: Database["public"]["Enums"]["target_period"]
+          target_type: Database["public"]["Enums"]["target_type"]
+          updated_at?: string
+          user_id: string
+          value?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          period?: Database["public"]["Enums"]["target_period"]
+          target_type?: Database["public"]["Enums"]["target_type"]
+          updated_at?: string
+          user_id?: string
+          value?: number
+        }
+        Relationships: []
+      }
+      techs: {
+        Row: {
+          active: boolean
+          area: string | null
+          created_at: string
+          created_by: string | null
+          email: string | null
+          id: string
+          name: string
+          notes: string | null
+          phone: string | null
+          specialization: string | null
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          area?: string | null
+          created_at?: string
+          created_by?: string | null
+          email?: string | null
+          id?: string
+          name: string
+          notes?: string | null
+          phone?: string | null
+          specialization?: string | null
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          area?: string | null
+          created_at?: string
+          created_by?: string | null
+          email?: string | null
+          id?: string
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          specialization?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      is_active: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "marketer"
+      lead_status:
+        | "new"
+        | "contacted"
+        | "scheduled"
+        | "in_progress"
+        | "won"
+        | "lost"
+        | "follow_up"
+      target_period: "daily" | "weekly" | "monthly"
+      target_type: "leads" | "amount"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +387,19 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "marketer"],
+      lead_status: [
+        "new",
+        "contacted",
+        "scheduled",
+        "in_progress",
+        "won",
+        "lost",
+        "follow_up",
+      ],
+      target_period: ["daily", "weekly", "monthly"],
+      target_type: ["leads", "amount"],
+    },
   },
 } as const
