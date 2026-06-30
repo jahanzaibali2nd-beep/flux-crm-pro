@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/integrations/auth-provider";
-import { listUsers, createUser, updateUser, deleteUser, changeUserPassword } from "@/lib/admin.functions";
+import { adminListUsers, adminCreateUser, adminUpdateUser, adminDeleteUser } from "@/lib/admin.functions";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -26,13 +26,13 @@ function SettingsPage() {
   useEffect(() => { if (role && role !== "admin") navigate({ to: "/dashboard" }); }, [role]);
 
   const load = async () => {
-    try { setUsers(await listUsers()); } catch (e: any) { toast.error(e.message); }
+    try { setUsers(await adminListUsers()); } catch (e: any) { toast.error(e.message); }
   };
   useEffect(() => { if (role === "admin") load(); }, [role]);
 
   const submit = async () => {
     try {
-      await createUser(form);
+      await adminCreateUser({ data: form as any });
       toast.success("User created");
       setOpen(false);
       setForm({ name: "", email: "", password: "", role: "marketer" });
@@ -41,20 +41,20 @@ function SettingsPage() {
   };
 
   const toggleActive = async (u: any) => {
-    try { await updateUser({ user_id: u.user_id, active: !u.active }); load(); }
+    try { await adminUpdateUser({ data: { user_id: u.user_id, active: !u.active } }); load(); }
     catch (e: any) { toast.error(e.message); }
   };
   const changeRole = async (u: any, r: string) => {
-    try { await updateUser({ user_id: u.user_id, role: r }); load(); }
+    try { await adminUpdateUser({ data: { user_id: u.user_id, role: r as any } }); load(); }
     catch (e: any) { toast.error(e.message); }
   };
   const remove = async (u: any) => {
     if (!confirm(`Delete ${u.email}?`)) return;
-    try { await deleteUser({ user_id: u.user_id }); toast.success("Deleted"); load(); }
+    try { await adminDeleteUser({ data: { user_id: u.user_id } }); toast.success("Deleted"); load(); }
     catch (e: any) { toast.error(e.message); }
   };
   const savePw = async () => {
-    try { await changeUserPassword({ user_id: pwOpen.user_id, password: newPw }); toast.success("Password updated"); setPwOpen(null); setNewPw(""); }
+    try { await adminUpdateUser({ data: { user_id: pwOpen.user_id, password: newPw } }); toast.success("Password updated"); setPwOpen(null); setNewPw(""); }
     catch (e: any) { toast.error(e.message); }
   };
 
