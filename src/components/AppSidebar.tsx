@@ -38,15 +38,15 @@ export function AppSidebar() {
   const items = allItems.filter((i) => (role ? i.roles.includes(role) : false));
 
   return (
-    <Sidebar collapsible="icon" className="border-r border-white/10 bg-transparent">
-      <SidebarHeader className="border-b border-white/10">
-        <div className="flex items-center gap-2 px-2 py-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-violet-500 to-cyan-400 shadow-lg">
+    <Sidebar collapsible="icon" className="border-r border-sidebar-border bg-sidebar text-sidebar-foreground transition-all duration-200">
+      <SidebarHeader className="border-b border-sidebar-border">
+        <div className="flex items-center gap-2.5 px-2 py-3">
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 shadow-md">
             <Sparkles className="h-5 w-5 text-white" />
           </div>
           <div className="flex flex-col group-data-[collapsible=icon]:hidden">
-            <span className="text-sm font-semibold text-white">Flux</span>
-            <span className="text-[10px] uppercase tracking-wider text-white/60">Marketing CRM</span>
+            <span className="text-sm font-bold tracking-tight text-sidebar-foreground">Flux CRM</span>
+            <span className="text-[9px] uppercase font-bold tracking-widest text-sidebar-foreground/50">PRO EDITION</span>
           </div>
         </div>
       </SidebarHeader>
@@ -63,12 +63,12 @@ export function AppSidebar() {
                       isActive={active}
                       className={
                         active
-                          ? "bg-white/15 text-white hover:bg-white/20"
-                          : "text-white/75 hover:bg-white/10 hover:text-white"
+                          ? "bg-sidebar-accent text-sidebar-accent-foreground font-semibold shadow-sm border border-sidebar-border/10"
+                          : "text-sidebar-foreground/75 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground transition-all"
                       }
                     >
                       <Link to={item.url} className="flex items-center gap-2">
-                        <item.icon className="h-4 w-4" />
+                        <item.icon className={`h-4 w-4 transition-transform ${active ? "scale-110 text-primary" : "text-sidebar-foreground/60"}`} />
                         <span>{item.title}</span>
                       </Link>
                     </SidebarMenuButton>
@@ -79,18 +79,18 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter className="border-t border-white/10 p-2">
-        <div className="flex flex-col gap-1 group-data-[collapsible=icon]:hidden">
-          <span className="px-2 text-xs text-white/80 truncate">{profile?.name}</span>
-          <span className="px-2 text-[10px] text-white/50 uppercase">{role}</span>
+      <SidebarFooter className="border-t border-sidebar-border p-3 bg-sidebar/50">
+        <div className="flex flex-col gap-1 group-data-[collapsible=icon]:hidden mb-2">
+          <span className="px-2 text-xs font-semibold text-sidebar-foreground/90 truncate">{profile?.name}</span>
+          <span className="px-2 text-[9px] font-bold tracking-widest text-sidebar-foreground/40 uppercase">{role}</span>
         </div>
         <Button
           variant="ghost"
           size="sm"
           onClick={() => signOut()}
-          className="justify-start text-white/80 hover:bg-white/10 hover:text-white"
+          className="justify-start text-sidebar-foreground/70 hover:bg-destructive/10 hover:text-destructive-foreground w-full h-8 px-2 font-medium text-xs rounded-md transition-all"
         >
-          <LogOut className="h-4 w-4" />
+          <LogOut className="h-4 w-4 mr-2" />
           <span className="group-data-[collapsible=icon]:hidden">Sign out</span>
         </Button>
       </SidebarFooter>

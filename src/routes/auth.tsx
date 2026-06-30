@@ -54,41 +54,59 @@ function AuthPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
-      <div className="glass-strong w-full max-w-md rounded-2xl p-8">
+      <div className="glass-strong w-full max-w-md rounded-2xl p-8 border border-border/10">
         <div className="mb-6 flex items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-cyan-400 shadow-lg">
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 shadow-lg">
             <Sparkles className="h-6 w-6 text-white" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-white">Flux Marketing CRM</h1>
-            <p className="text-xs text-white/60">
-              {mode === "bootstrap" ? "Create the first admin" : "Sign in to your account"}
+            <h1 className="text-xl font-extrabold text-foreground tracking-tight">Flux CRM</h1>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              {mode === "bootstrap" ? "Create the first admin account" : "Sign in to your account"}
             </p>
           </div>
         </div>
         <form onSubmit={submit} className="space-y-4">
           {mode === "bootstrap" && (
             <div className="space-y-2">
-              <Label className="text-white/80">Full name</Label>
+              <Label className="text-foreground/80 font-medium">Full name</Label>
               <Input className="glass-input" value={name} onChange={(e) => setName(e.target.value)} required />
             </div>
           )}
           <div className="space-y-2">
-            <Label className="text-white/80">Email</Label>
+            <Label className="text-foreground/80 font-medium">Email</Label>
             <Input type="email" className="glass-input" value={email} onChange={(e) => setEmail(e.target.value)} required />
           </div>
           <div className="space-y-2">
-            <Label className="text-white/80">Password</Label>
+            <Label className="text-foreground/80 font-medium">Password</Label>
             <Input type="password" className="glass-input" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} />
           </div>
-          <Button type="submit" disabled={busy} className="w-full bg-gradient-to-r from-violet-500 to-cyan-400 text-white hover:opacity-90">
+          <Button type="submit" disabled={busy} className="w-full bg-primary text-primary-foreground font-semibold hover:opacity-90 transition-all mt-6">
             {busy ? "Please wait..." : mode === "bootstrap" ? "Create admin account" : "Sign in"}
           </Button>
         </form>
         {mode === "signin" && (
-          <p className="mt-4 text-center text-xs text-white/50">
-            Only admins can create new users — ask your admin if you need access.
-          </p>
+          <div className="mt-6 text-center space-y-3">
+            <button 
+              type="button" 
+              onClick={() => setMode("bootstrap")}
+              className="text-xs text-primary hover:underline font-semibold block mx-auto cursor-pointer"
+            >
+              Create first admin account
+            </button>
+            <p className="text-[11px] text-muted-foreground/80 leading-relaxed">
+              Only administrators can create new user accounts. Ask your admin if you need access.
+            </p>
+          </div>
+        )}
+        {mode === "bootstrap" && (
+          <button 
+            type="button" 
+            onClick={() => setMode("signin")}
+            className="mt-6 text-xs text-primary hover:underline font-semibold block mx-auto text-center cursor-pointer"
+          >
+            Back to Sign in
+          </button>
         )}
       </div>
     </div>

@@ -78,6 +78,10 @@ export const adminUpdateUser = createServerFn({ method: "POST" })
     }).parse(d))
   .handler(async ({ data, context }) => {
     await ensureAdmin(context.supabase, context.userId);
+    if (data.user_id === context.userId) {
+      if (data.active === false) throw new Error("Cannot deactivate yourself");
+      if (data.role === "marketer") throw new Error("Cannot demote yourself from admin");
+    }
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     if (data.password) {
       const { error } = await supabaseAdmin.auth.admin.updateUserById(data.user_id, { password: data.password });

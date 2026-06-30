@@ -1,6 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/integrations/auth-provider";
 import { Card } from "@/components/ui/card";
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, BarChart, Bar, Tooltip, PieChart, Pie, Cell, Legend } from "recharts";
 
@@ -9,11 +10,17 @@ export const Route = createFileRoute("/_authenticated/analytics")({ component: A
 const COLORS = ["#a78bfa", "#22d3ee", "#f472b6", "#fbbf24", "#34d399", "#f87171", "#60a5fa"];
 
 function AnalyticsPage() {
+  const { role } = useAuth();
+  const navigate = useNavigate();
   const [leads, setLeads] = useState<any[]>([]);
 
   useEffect(() => {
+    if (role && role !== "admin") {
+      navigate({ to: "/dashboard" });
+      return;
+    }
     supabase.from("leads").select("*").order("created_at").then(({ data }) => setLeads(data ?? []));
-  }, []);
+  }, [role, navigate]);
 
   const byDay: Record<string, { date: string; count: number; amount: number }> = {};
   const now = new Date();

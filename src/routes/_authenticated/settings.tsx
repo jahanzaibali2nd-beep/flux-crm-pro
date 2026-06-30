@@ -64,20 +64,20 @@ function SettingsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-white">Settings</h1>
-          <p className="text-sm text-white/60">Manage users and roles</p>
+          <h1 className="text-3xl font-extrabold text-foreground tracking-tight">Settings</h1>
+          <p className="text-sm text-muted-foreground mt-1">Manage users and roles</p>
         </div>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-gradient-to-r from-violet-500 to-cyan-400 text-white"><Plus className="mr-2 h-4 w-4" />New user</Button>
+            <Button className="bg-primary text-primary-foreground font-semibold hover:opacity-90 transition-all"><Plus className="mr-2 h-4 w-4" />New user</Button>
           </DialogTrigger>
-          <DialogContent className="glass-strong text-white sm:max-w-md">
-            <DialogHeader><DialogTitle className="text-white">Create user</DialogTitle></DialogHeader>
-            <div className="space-y-3">
-              <div><Label className="text-white/80">Name</Label><Input className="glass-input" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} /></div>
-              <div><Label className="text-white/80">Email</Label><Input className="glass-input" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} /></div>
-              <div><Label className="text-white/80">Password</Label><Input className="glass-input" type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} /></div>
-              <div><Label className="text-white/80">Role</Label>
+          <DialogContent className="glass-strong text-foreground sm:max-w-md">
+            <DialogHeader><DialogTitle className="text-foreground font-bold">Create user account</DialogTitle></DialogHeader>
+            <div className="space-y-4 mt-2">
+              <div><Label className="text-foreground/80 font-medium">Name</Label><Input className="glass-input" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} /></div>
+              <div><Label className="text-foreground/80 font-medium">Email</Label><Input className="glass-input" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} /></div>
+              <div><Label className="text-foreground/80 font-medium">Password</Label><Input className="glass-input font-mono" type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} /></div>
+              <div><Label className="text-foreground/80 font-medium">Role</Label>
                 <Select value={form.role} onValueChange={(v) => setForm({ ...form, role: v })}>
                   <SelectTrigger className="glass-input"><SelectValue /></SelectTrigger>
                   <SelectContent>
@@ -86,7 +86,7 @@ function SettingsPage() {
                   </SelectContent>
                 </Select>
               </div>
-              <Button onClick={submit} className="w-full bg-gradient-to-r from-violet-500 to-cyan-400 text-white">Create</Button>
+              <Button onClick={submit} className="w-full bg-primary text-primary-foreground font-semibold hover:opacity-90 transition-all mt-4">Create account</Button>
             </div>
           </DialogContent>
         </Dialog>
@@ -94,26 +94,26 @@ function SettingsPage() {
 
       <div className="grid gap-3">
         {users.map((u) => (
-          <Card key={u.user_id} className="glass border-white/10 p-4 text-white">
+          <Card key={u.user_id} className="glass p-4 text-foreground hover:scale-[1.01] transition-all duration-200">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
-                <div className="font-semibold">{u.name}</div>
-                <div className="text-xs text-white/60">{u.email}</div>
+                <div className="font-bold text-base tracking-tight">{u.name}</div>
+                <div className="text-xs text-muted-foreground mt-0.5">{u.email}</div>
               </div>
               <div className="flex flex-wrap items-center gap-3">
                 <Select value={u.role} onValueChange={(v) => changeRole(u, v)}>
-                  <SelectTrigger className="glass-input h-8 w-32 text-xs"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="glass-input h-8 w-32 text-xs font-semibold"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="admin">Admin</SelectItem>
                     <SelectItem value="marketer">Marketer</SelectItem>
                   </SelectContent>
                 </Select>
-                <div className="flex items-center gap-2 text-xs">
+                <div className="flex items-center gap-2 text-xs font-medium">
                   <Switch checked={u.active} onCheckedChange={() => toggleActive(u)} />
-                  <span className="text-white/70">{u.active ? "Active" : "Inactive"}</span>
+                  <span className="text-foreground/70">{u.active ? "Active" : "Inactive"}</span>
                 </div>
-                <Button size="sm" variant="ghost" className="text-white hover:bg-white/10" onClick={() => setPwOpen(u)}><Key className="h-4 w-4" /></Button>
-                <Button size="sm" variant="ghost" className="text-red-300 hover:bg-red-500/20" onClick={() => remove(u)}><Trash2 className="h-4 w-4" /></Button>
+                <Button size="sm" variant="ghost" className="text-foreground hover:bg-foreground/5 h-8 w-8 p-0" onClick={() => setPwOpen(u)}><Key className="h-4 w-4" /></Button>
+                <Button size="sm" variant="ghost" className="text-rose-500 hover:bg-rose-500/10 h-8 w-8 p-0" onClick={() => remove(u)}><Trash2 className="h-4 w-4" /></Button>
               </div>
             </div>
           </Card>
@@ -122,12 +122,14 @@ function SettingsPage() {
 
       {pwOpen && (
         <Dialog open onOpenChange={() => setPwOpen(null)}>
-          <DialogContent className="glass-strong text-white sm:max-w-sm">
-            <DialogHeader><DialogTitle className="text-white">Change password</DialogTitle></DialogHeader>
-            <div className="space-y-3">
-              <div className="text-sm text-white/70">{pwOpen.email}</div>
-              <Input className="glass-input" type="password" placeholder="New password" value={newPw} onChange={(e) => setNewPw(e.target.value)} />
-              <Button onClick={savePw} className="w-full bg-gradient-to-r from-violet-500 to-cyan-400 text-white">Update password</Button>
+          <DialogContent className="glass-strong text-foreground sm:max-w-sm">
+            <DialogHeader><DialogTitle className="text-foreground font-bold">Change password</DialogTitle></DialogHeader>
+            <div className="space-y-4 mt-2">
+              <div className="text-xs font-semibold text-muted-foreground bg-foreground/[0.03] p-2.5 rounded-lg border border-border/10 font-mono truncate">{pwOpen.email}</div>
+              <div><Label className="text-foreground/80 font-medium">New password</Label>
+                <Input className="glass-input font-mono mt-1" type="password" placeholder="Min 6 characters" value={newPw} onChange={(e) => setNewPw(e.target.value)} />
+              </div>
+              <Button onClick={savePw} className="w-full bg-primary text-primary-foreground font-semibold hover:opacity-90 transition-all mt-4">Update password</Button>
             </div>
           </DialogContent>
         </Dialog>
